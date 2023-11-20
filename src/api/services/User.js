@@ -10,3 +10,7 @@ export async function getUserTodoGroups(id) {
         console.log(e);
     }
 }
+
+export async function login(email, password) {
+    return null
+}

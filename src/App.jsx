@@ -78,7 +78,7 @@ function App() {
       ],
     }
   ]);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     // TODO: fetch groups from api using user service
