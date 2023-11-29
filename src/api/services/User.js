@@ -27,8 +27,28 @@ export async function login(email, password) {
         },
       }
     );
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+}
 
-    console.log(response.data);
+export async function register(email, password) {
+  console.log(email, password);
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/auth/register`,
+      {
+        "user_email": email,
+        "password": password,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (e) {
     console.log(e);
