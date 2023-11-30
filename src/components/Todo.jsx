@@ -6,7 +6,7 @@ const Todo = ({ todo, removeTodo }) => {
   };
 
   return (
-    <li className="flex justify-between text-white ">
+    <li className="flex justify-between text-white w-full">
       {/* Left side of To-Do */}
       <div className="w-8/12">
         {/* To-Do Content */}

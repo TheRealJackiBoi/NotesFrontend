@@ -4,6 +4,7 @@ import TodoGroup from "./components/TodoGroup";
 import CreateTodoGroupModal from "./components/CreateTodoGroupModal";
 import { useEffect, useState } from "react";
 import {getUserTodoGroups, createUserTodoGroups} from "./api/services/TodoGroup"
+import { getUserTodoGroupsTodos, createUserTodoGroupsTodos } from "./api/services/Todo"
 
 function App() {
   const [groups, setGroups] = useState([]);
@@ -17,9 +18,22 @@ function App() {
     if (user) {
       fetchUserNoteGroups(user.user_email, user.token)
     }
+
   }, [user]);
 
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+
+  // USER
+  const handleSetUser = (user) => {
+    setUser(user);
+  };
+
+
+  // GROUPS
   const fetchUserNoteGroups = async (userEmail, userToken) => {
     try {
       const noteGroups = await getUserTodoGroups(userEmail, userToken)
@@ -46,13 +60,31 @@ function App() {
     }
   }
 
-  const handleSetUser = (user) => {
-    setUser(user);
-  };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+  // TODOS
+  const fetchUserTodoGroupTodos = async (todoGroupId, callbackSetTodos) => {
+    try {
+      const todos = await getUserTodoGroupsTodos(user.user_email, user.token, todoGroupId)
+      if (await todos) {
+        callbackSetTodos(todos) 
+      }
+    }
+      catch (e) {
+        console.error(e)
+      }
+    }
+  
+  const createUserTodoGroupTodos = async (todoGroupId, todo, callbackSetTodos) => {
+    try {
+      const newTodo = await createUserTodoGroupsTodos(user.user_email, user.token, todoGroupId, todo)
+      if (await newTodo) {
+        callbackSetTodos(prevTodos => [...prevTodos, newTodo]) 
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -67,7 +99,11 @@ function App() {
           </div>
           <div className="flex mx-auto my-8 px-4 sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/2 justify-between flex-wrap gap-8">
             {groups.map((group, index) => (
-              <TodoGroup key={index} group={group} />
+              <TodoGroup  key={index} 
+                          group={group} 
+                          createUserTodoGroupTodos={createUserTodoGroupTodos} 
+                          fetchUserTodoGroupTodos={fetchUserTodoGroupTodos} 
+              />
             ))}
           </div>
         </div>

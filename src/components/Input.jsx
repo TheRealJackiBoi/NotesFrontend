@@ -1,7 +1,7 @@
 import { useState } from "react"
 import PropTypes from 'prop-types';
 
-const Input = ({ addHandler, getId }) => {
+const Input = ({ addHandler }) => {
     
     // Default To-Do
     const [newTodo, setNewTodo] = useState({
@@ -11,7 +11,7 @@ const Input = ({ addHandler, getId }) => {
         
     const handleAddTodo = () => {
         if (newTodo.content.trim()) {
-            addHandler({"id": getId, ...newTodo})
+            addHandler({...newTodo})
             setNewTodo({
                 "content": "",
                 "color": ""
@@ -30,7 +30,6 @@ const Input = ({ addHandler, getId }) => {
 
 Input.propTypes = {
     addHandler: PropTypes.func.isRequired,
-    getId: PropTypes.func.isRequired
   };
 
   export default Input

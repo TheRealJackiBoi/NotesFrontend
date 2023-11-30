@@ -1,21 +1,28 @@
 import "../App.css";
 import Input from "./Input";
 import Todo from "./Todo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-function TodoGroup({ group }) {
-  const [lastId, setLastId] = useState(0);
+
+function TodoGroup({ group, createUserTodoGroupTodos, fetchUserTodoGroupTodos }) {
   const [todos, setTodos] = useState(group.notes);
 
-  const getNewId = () => {
-    setLastId(lastId + 1);
-    return lastId;
-  };
 
-  const updateTodos = (newTodo) => {
-    setTodos([...todos, newTodo]);
-  };
+  useEffect(() => {
+    fetchUserTodoGroupTodos(group.id, setTodos)
+  }, []);
+
+  
+  // Handle todos
+  const createTodo = async (todo) => {
+    try {
+      await createUserTodoGroupTodos(group.id, todo, setTodos)
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
 
   const removeTodo = (todoId) => {
     setTodos(todos.filter((todo) => todo.id !== todoId));
@@ -24,6 +31,7 @@ function TodoGroup({ group }) {
   const handleRemoveAll = () => {
     setTodos([]);
   };
+
 
   return (
     <div className="container rounded shadow-md shadow-slate-700 bg-slate-800 text-white w-full sm:w-1/2 md:w-1/3 lg:w-1/5">
@@ -35,7 +43,7 @@ function TodoGroup({ group }) {
       <div className="container w-11/12 mx-auto">
 
         {/* Input Todo */}
-        <Input addHandler={updateTodos} getId={getNewId} />
+        <Input addHandler={createTodo}/>
 
         {/* Todos */}
         <ul className="mt-4 mx-auto w-full">
