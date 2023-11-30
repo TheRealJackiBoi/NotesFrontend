@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 function TodoGroup({ group }) {
   const [lastId, setLastId] = useState(0);
-  const [todos, setTodos] = useState(group.todos);
+  const [todos, setTodos] = useState(group.notes);
 
   const getNewId = () => {
     setLastId(lastId + 1);

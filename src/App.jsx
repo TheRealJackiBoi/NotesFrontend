@@ -1,102 +1,71 @@
 import "./App.css";
-import TodoGroup from "./components/TodoGroup";
-import { useEffect, useState } from "react";
 import Login from "./components/auth/Login";
+import TodoGroup from "./components/TodoGroup";
+import CreateTodoGroupModal from "./components/CreateTodoGroupModal";
+import { useEffect, useState } from "react";
+import {getUserTodoGroups, createUserTodoGroups} from "./api/services/TodoGroup"
 
 function App() {
-  const [groups, setGroups] = useState([
-    {
-      id: 1,
-      name: "Group 1",
-      todos: [
-        {
-          id: 1,
-          content: "Content 1",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 2,
-          content: "Content 2",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 3,
-          content: "Content 3",
-          color: "#000000",
-          completed: false,
-        },
-      ],
-    },
-   {
-      id: 2,
-      name: "Group 2",
-      todos: [
-        {
-          id: 4,
-          content: "Content 4",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 5,
-          content: "Content 5",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 6,
-          content: "Content 6",
-          color: "#000000",
-          completed: false,
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Group 3",
-      todos: [
-        {
-          id: 7,
-          content: "Content 7",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 8,
-          content: "Content 8",
-          color: "#000000",
-          completed: false,
-        },
-        {
-          id: 9,
-          content: "Content 9",
-          color: "#000000",
-          completed: false,
-        },
-      ],
-    }
-  ]);
+  const [groups, setGroups] = useState([]);
   const [user, setUser] = useState(null);
 
+  const [showModal, setShowModal] = useState(false);
+
+
   useEffect(() => {
-    // TODO: fetch groups from api using user service
-    setGroups[{}];
+
+    if (user) {
+      fetchUserNoteGroups(user.user_email, user.token)
+    }
   }, [user]);
+
+
+  const fetchUserNoteGroups = async (userEmail, userToken) => {
+    try {
+      const noteGroups = await getUserTodoGroups(userEmail, userToken)
+      console.log(noteGroups)
+      if (await noteGroups) {
+        console.log(noteGroups)
+        setGroups(noteGroups)
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
+  const createTodoGroup = async (todoGroupName) => {
+    try {
+      const newTodoGroup = await createUserTodoGroups(user.user_email, user.token, {name: todoGroupName})
+      if (await newTodoGroup) {
+        setGroups([...groups, newTodoGroup])
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
 
   const handleSetUser = (user) => {
     setUser(user);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
-    <div className="">
+    <div className="min-h-screen bg-gray-100">
       {user == null ? (
         <Login handleSetUser={handleSetUser} />
       ) : (
-        <div className="">
-          <h1 className="text-center my-4 text-4xl">Todos</h1>
-          <div className="container mx-auto px-4 sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/2 flex justify-between align-middle flex-wrap gap-2">
+        <div className="mx-auto p-4">
+          <h1 className="text-center my-8 text-4xl">Todos</h1>
+          <CreateTodoGroupModal showModal={showModal} closeModal={handleCloseModal} createTodoGroup={createTodoGroup} />
+          <div className="flex justify-center">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowModal(true)}>Create Todo Group</button>
+          </div>
+          <div className="flex mx-auto my-8 px-4 sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/2 justify-between flex-wrap gap-8">
             {groups.map((group, index) => (
               <TodoGroup key={index} group={group} />
             ))}

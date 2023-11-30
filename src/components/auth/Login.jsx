@@ -5,7 +5,6 @@ const Login = ({ handleSetUser }) => {
 
   async function handleLogin(formData) {
     const user = await login(formData.email.value, formData.password.value);
-    console.log(user)
     if (user != null) {
       console.log("logged in")
       handleSetUser(user);
