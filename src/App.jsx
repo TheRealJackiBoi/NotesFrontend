@@ -3,8 +3,8 @@ import Login from "./components/auth/Login";
 import TodoGroup from "./components/TodoGroup";
 import CreateTodoGroupModal from "./components/CreateTodoGroupModal";
 import { useEffect, useState } from "react";
-import {getUserTodoGroups, createUserTodoGroups} from "./api/services/TodoGroup"
-import { getUserTodoGroupsTodos, createUserTodoGroupsTodos } from "./api/services/Todo"
+import {getUserTodoGroups, createUserTodoGroups, removeUserTodoGroup} from "./api/services/TodoGroup"
+import { getUserTodoGroupsTodos, createUserTodoGroupsTodos, removeUserTodoGroupTodo } from "./api/services/Todo"
 
 function App() {
   const [groups, setGroups] = useState([]);
@@ -60,6 +60,18 @@ function App() {
     }
   }
 
+  const removeGroup = async (groupId) => {
+    try {
+      const removedGroup = await removeUserTodoGroup(user.user_email, user.token, groupId)
+      if (await removedGroup) {
+        setGroups(groups.filter(group => group.id !== groupId))
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
 
   // TODOS
   const fetchUserTodoGroupTodos = async (todoGroupId, callbackSetTodos) => {
@@ -86,6 +98,18 @@ function App() {
     }
   }
 
+  const removeTodo = async (todoGroupId, todoId, callbackSetTodos) => {
+    try {
+      const removedTodo = await removeUserTodoGroupTodo(user.user_email, user.token, todoGroupId, todoId)
+      if (await removedTodo) {
+        callbackSetTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId)) 
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {user == null ? (
@@ -101,8 +125,10 @@ function App() {
             {groups.map((group, index) => (
               <TodoGroup  key={index} 
                           group={group} 
+                          removeGroup={removeGroup}
                           createUserTodoGroupTodos={createUserTodoGroupTodos} 
-                          fetchUserTodoGroupTodos={fetchUserTodoGroupTodos} 
+                          fetchUserTodoGroupTodos={fetchUserTodoGroupTodos}
+                          removeTodo={removeTodo} 
               />
             ))}
           </div>

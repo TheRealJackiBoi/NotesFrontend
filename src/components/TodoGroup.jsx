@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 
-function TodoGroup({ group, createUserTodoGroupTodos, fetchUserTodoGroupTodos }) {
+function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodoGroupTodos, removeTodo }) {
   const [todos, setTodos] = useState(group.notes);
 
 
@@ -24,20 +24,30 @@ function TodoGroup({ group, createUserTodoGroupTodos, fetchUserTodoGroupTodos })
     }
   }
 
-  const removeTodo = (todoId) => {
-    setTodos(todos.filter((todo) => todo.id !== todoId));
+  const handleRemoveTodo = (todoId) => {
+    removeTodo(group.id, todoId, setTodos)
   };
 
   const handleRemoveAll = () => {
     setTodos([]);
   };
 
+  const handleDeleteGroup = () => {
+    removeGroup(group.id, setTodos)
+  }
+
 
   return (
     <div className="container rounded shadow-md shadow-slate-700 bg-slate-800 text-white w-full sm:w-1/2 md:w-1/3 lg:w-1/5">
       {/* Header */}
-      <div className="text-center w-2/5 mx-auto mt-2">
-        <h1>{group.name}</h1>
+      <div className="flex justify-between items-center">
+        <div className="text-center w-2/5 mx-auto mt-2">
+          <h1>{group.name}</h1>
+        </div>
+        {/* Delete Group Button */}
+        <button className="bg-red-700 mr-2 mt-2 w-8 h-8 flex items-center justify-center rounded-full" onClick={handleDeleteGroup}>
+          &times;
+        </button>
       </div>
 
       <div className="container w-11/12 mx-auto">
@@ -49,7 +59,7 @@ function TodoGroup({ group, createUserTodoGroupTodos, fetchUserTodoGroupTodos })
         <ul className="mt-4 mx-auto w-full">
           {todos.length ? (
             todos.map((todo, index) => (
-              <Todo key={index} todo={todo} removeTodo={removeTodo} />
+              <Todo key={index} todo={todo} removeTodo={handleRemoveTodo} />
             ))
           ) : (
             <p></p>
@@ -67,6 +77,9 @@ function TodoGroup({ group, createUserTodoGroupTodos, fetchUserTodoGroupTodos })
 
 TodoGroup.propTypes = {
   group: PropTypes.object.isRequired,
+  createUserTodoGroupTodos: PropTypes.func.isRequired,
+  fetchUserTodoGroupTodos: PropTypes.func.isRequired,
+  removeTodo: PropTypes.func.isRequired,
 };
 
 export default TodoGroup;

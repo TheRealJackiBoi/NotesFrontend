@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const CreateTodoGroupModal = ({ showModal, closeModal, createTodoGroup }) => {
   const [todoGroupName, setTodoGroupName] = useState('');
 
@@ -46,5 +47,6 @@ const CreateTodoGroupModal = ({ showModal, closeModal, createTodoGroup }) => {
     </>
   );
 };
+
 
 export default CreateTodoGroupModal;

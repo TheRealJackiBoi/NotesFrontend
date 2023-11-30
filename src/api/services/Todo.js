@@ -44,3 +44,25 @@ export async function createUserTodoGroupsTodos(
     console.error(e);
   }
 }
+
+export async function removeUserTodoGroupTodo(
+  userEmail,
+  userToken,
+  todoGroupId,
+  todoId
+) {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/users/${userEmail}/note_groups/${todoGroupId}/notes/${todoId}`,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return await response.data;
+  } catch (e) {
+    console.error(e);
+  }
+}
