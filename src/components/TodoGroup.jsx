@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 
-function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodoGroupTodos, removeTodo }) {
+function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodoGroupTodos, removeTodo, removeAllTodosForGroup }) {
   const [todos, setTodos] = useState(group.notes);
 
 
@@ -28,24 +28,24 @@ function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodo
     removeTodo(group.id, todoId, setTodos)
   };
 
-  const handleRemoveAll = () => {
-    setTodos([]);
-  };
-
   const handleDeleteGroup = () => {
     removeGroup(group.id, setTodos)
+  }
+
+  const handleRemoveAllTodosForGroup = () => {
+    removeAllTodosForGroup(group.id, setTodos)
   }
 
 
   return (
     <div className="container rounded shadow-md shadow-slate-700 bg-slate-800 text-white w-full sm:w-1/2 md:w-1/3 lg:w-1/5">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center w-11/12 mx-auto">
         <div className="text-center w-2/5 mx-auto mt-2">
           <h1>{group.name}</h1>
         </div>
         {/* Delete Group Button */}
-        <button className="bg-red-700 mr-2 mt-2 w-8 h-8 flex items-center justify-center rounded-full" onClick={handleDeleteGroup}>
+        <button className="bg-red-700 -ml-4 mt-2 w-8 h-8 flex items-center justify-center rounded-full" onClick={handleDeleteGroup}>
           &times;
         </button>
       </div>
@@ -67,7 +67,7 @@ function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodo
         </ul>
 
         {/* Remove ALL Button */}
-        <button className="my-4" onClick={handleRemoveAll}>
+        <button className="my-4" onClick={handleRemoveAllTodosForGroup}>
           Remove All
         </button>
       </div>

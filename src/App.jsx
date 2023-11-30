@@ -3,7 +3,7 @@ import Login from "./components/auth/Login";
 import TodoGroup from "./components/TodoGroup";
 import CreateTodoGroupModal from "./components/CreateTodoGroupModal";
 import { useEffect, useState } from "react";
-import {getUserTodoGroups, createUserTodoGroups, removeUserTodoGroup} from "./api/services/TodoGroup"
+import {getUserTodoGroups, createUserTodoGroups, removeUserTodoGroup, removeUserTodoGroupTodos} from "./api/services/TodoGroup"
 import { getUserTodoGroupsTodos, createUserTodoGroupsTodos, removeUserTodoGroupTodo } from "./api/services/Todo"
 
 function App() {
@@ -72,7 +72,6 @@ function App() {
     }
   }
 
-
   // TODOS
   const fetchUserTodoGroupTodos = async (todoGroupId, callbackSetTodos) => {
     try {
@@ -110,6 +109,18 @@ function App() {
     }
   }
 
+  const removeAllTodosForGroup = async (todoGroupId, callbackSetTodos) => {
+    try {
+      const removedTodos = await removeUserTodoGroupTodos(user.user_email, user.token, todoGroupId)
+      if (await removedTodos) {
+        callbackSetTodos([]) 
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {user == null ? (
@@ -126,6 +137,7 @@ function App() {
               <TodoGroup  key={index} 
                           group={group} 
                           removeGroup={removeGroup}
+                          removeAllTodosForGroup={removeAllTodosForGroup}
                           createUserTodoGroupTodos={createUserTodoGroupTodos} 
                           fetchUserTodoGroupTodos={fetchUserTodoGroupTodos}
                           removeTodo={removeTodo} 
