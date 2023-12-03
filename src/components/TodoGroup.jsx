@@ -8,10 +8,9 @@ import PropTypes from "prop-types";
 function TodoGroup({ group, removeGroup, createUserTodoGroupTodos, fetchUserTodoGroupTodos, removeTodo, removeAllTodosForGroup }) {
   const [todos, setTodos] = useState(group.notes);
 
-
   useEffect(() => {
     fetchUserTodoGroupTodos(group.id, setTodos)
-  }, []);
+  }, [updating]);
 
   
   // Handle todos
